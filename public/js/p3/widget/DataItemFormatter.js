@@ -2849,6 +2849,138 @@ define([
       return div;
     },
 
+    private_genome_metadata_data: function (item, options) {
+      options = options || {};
+
+      var sectionList = this.private_genome_metadata_table_names();
+      var section = this.private_genome_metadata_spec();
+
+      var div = domConstruct.create('div');
+      if (!options.hideHeader) {
+        displayHeader(div, item.genome_name, 'fa icon-genome fa-2x', '/view/Genome/' + item.genome_id, options);
+      }
+
+      displayDetailBySections(item, sectionList, section, div, options);
+
+      return div;
+    },
+
+    private_genome_metadata_table_names: function () {
+      return ['Genome Identity', 'Submitting Lab', 'Host & Patient', 'Isolation & Location', 'Collection Dates', 'Typing & Characterization', 'Record Info'];
+    },
+
+    private_genome_metadata_spec: function () {
+      return {
+        'Genome Identity': [{
+          name: 'Genome ID',
+          text: 'genome_id',
+          link: '/view/Genome/',
+          mini: true
+        }, {
+          name: 'Genome Name',
+          text: 'genome_name',
+          mini: true
+        }, {
+          name: 'Taxon ID',
+          text: 'taxon_id'
+        }],
+
+        'Submitting Lab': [{
+          name: 'Lab ID',
+          text: 'lab_id'
+        }, {
+          name: 'Lab Key',
+          text: 'lab_key'
+        }],
+
+        'Host & Patient': [{
+          name: 'Host Name',
+          text: 'host_name'
+        }, {
+          name: 'Patient Age',
+          text: 'patient_age'
+        }, {
+          name: 'Patient Age (Days)',
+          text: 'patient_age_days'
+        }],
+
+        'Isolation & Location': [{
+          name: 'Isolation Source',
+          text: 'isolation_source'
+        }, {
+          name: 'Isolation Country',
+          text: 'isolation_country'
+        }, {
+          name: 'State / Province',
+          text: 'state_province'
+        }, {
+          name: 'County',
+          text: 'county'
+        }, {
+          name: 'City',
+          text: 'city'
+        }],
+
+        'Collection Dates': [{
+          name: 'Collection Date',
+          text: 'collection_date'
+        }, {
+          name: 'Received Date',
+          text: 'received_date',
+          type: 'date'
+        }, {
+          name: 'Upload Date',
+          text: 'upload_date',
+          type: 'date'
+        }, {
+          name: 'Modified Date',
+          text: 'modified_date',
+          type: 'date'
+        }],
+
+        'Typing & Characterization': [{
+          name: 'Serovar',
+          text: 'serovar'
+        }, {
+          name: 'Pathovar',
+          text: 'pathovar'
+        }, {
+          name: 'Lineage',
+          text: 'lineage'
+        }, {
+          name: 'Allele Code',
+          text: 'allele_code'
+        }, {
+          name: 'Antigen',
+          text: 'antigen'
+        }, {
+          name: 'Toxin',
+          text: 'toxin',
+          multiValued: true
+        }, {
+          name: 'Toxin (WGS)',
+          text: 'toxin_wgs',
+          multiValued: true
+        }, {
+          name: 'Outbreak',
+          text: 'outbreak'
+        }],
+
+        'Record Info': [{
+          name: 'Owner',
+          text: 'owner'
+        }, {
+          name: 'Date Inserted',
+          text: 'date_inserted',
+          type: 'date'
+        }, {
+          name: 'Date Modified',
+          text: 'date_modified',
+          type: 'date'
+        }]
+      };
+    },
+
     genome_amr_data: function (item, options) {
       var sectionList = ['Summary', 'Measurement', 'Laboratory Method', 'Computational Method'];
       var section = {};

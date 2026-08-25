@@ -1668,5 +1668,61 @@ define([], function () {
         field: 'public', type: 'str', facet: true, facet_hidden: false, search: true
       },
     ],
+    'private_genome_metadata': [
+      {
+        field: 'taxon_id', type: 'str', facet: true, facet_hidden: true, search: true
+      },
+      {
+        field: 'genome_id', type: 'str', facet: true, facet_hidden: true, search: true
+      },
+      {
+        field: 'genome_name', type: 'str', facet: true, facet_hidden: true, search: true
+      },
+      {
+        field: 'isolation_country', type: 'str', facet: true, facet_hidden: false, search: true
+      },
+      {
+        field: 'state_province', type: 'str', facet: true, facet_hidden: false, search: true
+      },
+      {
+        field: 'city', type: 'str', facet: true, facet_hidden: true, search: true
+      },
+      {
+        field: 'county', type: 'str', facet: true, facet_hidden: true, search: true
+      },
+      {
+        field: 'host_name', type: 'str', facet: true, facet_hidden: false, search: true
+      },
+      {
+        field: 'collection_date', type: 'str', facet: true, facet_hidden: true, search: true
+      },
+      {
+        field: 'serovar', type: 'str', facet: true, facet_hidden: false, search: true
+      },
+      {
+        field: 'pathovar', type: 'str', facet: true, facet_hidden: true, search: true
+      },
+      {
+        field: 'lineage', type: 'str', facet: true, facet_hidden: true, search: true
+      },
+      {
+        field: 'allele_code', type: 'str', facet: true, facet_hidden: true, search: true
+      },
+      {
+        field: 'antigen', type: 'str', facet: true, facet_hidden: true, search: true
+      },
+      {
+        field: 'toxin', type: 'str', facet: true, facet_hidden: true, search: true
+      },
+      {
+        field: 'toxin_wgs', type: 'str', facet: true, facet_hidden: true, search: true
+      },
+      {
+        field: 'outbreak', type: 'str', facet: true, facet_hidden: false, search: true
+      },
+      {
+        field: 'lab_id', type: 'str', facet: true, facet_hidden: true, search: true
+      },
+    ],
   }
 })

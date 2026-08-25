@@ -5,6 +5,7 @@ define([
   '../AMRPanelGridContainer', '../SequenceGridContainer',
   '../FeatureGridContainer', '../ProteinGridContainer', '../SpecialtyGeneGridContainer', '../ProteinFamiliesContainer',
   '../PathwayGridContainer', '../ExperimentsContainer',  '../SubsystemGridContainer',
+  '../PrivateGenomeMetadataGridContainer',
   '../SaveDashboardDialog'
 ], function (
   declare, lang, Topic, on, domConstruct,
@@ -13,6 +14,7 @@ define([
   AMRPanelGridContainer, SequenceGridContainer,
   FeatureGridContainer, ProteinGridContainer, SpecialtyGeneGridContainer, ProteinFamiliesContainer,
   PathwaysContainer, ExperimentsContainer, SubSystemsContainer,
+  PrivateGenomeMetadataGridContainer,
   SaveDashboardDialog
 ) {
 
@@ -68,7 +70,19 @@ define([
         console.log('ACTIVE TAB NOT FOUND: ', active)
         return;
       }
-      const activeQueryState = lang.mixin({}, this.state, { hashParams: lang.mixin({}, this.state.hashParams) })
+
+      var activeQueryState;
+      if (active === 'privateGenomeMetadata' && this.state.search) {
+        // private_genome_metadata text index excludes owner/lab fields, so join through genome collection
+        var context = this.state.search.split('&');
+        var genomeFilter = context.length > 1 ? 'and(' + context.join(',') + ')' : context[0];
+        activeQueryState = lang.mixin({}, this.state, {
+          search: 'eq(genome_id,*)&genome(' + genomeFilter + ')',
+          hashParams: lang.mixin({}, this.state.hashParams)
+        });
+      } else {
+        activeQueryState = lang.mixin({}, this.state, { hashParams: lang.mixin({}, this.state.hashParams) });
+      }
 
       activeTab.set('state', activeQueryState)
 
@@ -150,6 +164,11 @@ define([
         state: this.state
       });
 
+      this.privateGenomeMetadata = new PrivateGenomeMetadataGridContainer({
+        title: 'Private Genome Metadata',
+        id: this.viewer.id + '_privateGenomeMetadata'
+      });
+
       this.features = new FeatureGridContainer({
         title: 'Features',
         id: this.viewer.id + '_features',
@@ -194,6 +213,7 @@ define([
       this.viewer.addChild(this.overview)
       this.viewer.addChild(this.genomes)
       this.viewer.addChild(this.amr);
+      this.viewer.addChild(this.privateGenomeMetadata);
       this.viewer.addChild(this.sequences);
       this.viewer.addChild(this.features);
       // this.viewer.addChild(this.proteins);

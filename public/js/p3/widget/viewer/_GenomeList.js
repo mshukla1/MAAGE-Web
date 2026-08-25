@@ -5,7 +5,7 @@ define([
   '../PathwayGridContainer',
   '../ExperimentsContainer', '../InteractionContainer', '../GenomeGridContainer',
   '../AMRPanelGridContainer', '../SubsystemGridContainer', '../SurveillanceGridContainer', '../SerologyGridContainer', '../SFVTGridContainer',
-  '../SequenceGridContainer', '../StrainGridContainer', '../StrainGridContainer_Orthomyxoviridae', '../StrainGridContainer_Bunyavirales', '../EpitopeGridContainer', '../../util/PathJoin', '../../util/QueryToEnglish', 'dijit/Dialog'
+  '../SequenceGridContainer', '../StrainGridContainer', '../StrainGridContainer_Orthomyxoviridae', '../StrainGridContainer_Bunyavirales', '../EpitopeGridContainer', '../PrivateGenomeMetadataGridContainer', '../../util/PathJoin', '../../util/QueryToEnglish', 'dijit/Dialog'
 ], function (
   declare, TabViewerBase, on, lang, xhr,
   ContentPane, Topic,
@@ -13,7 +13,7 @@ define([
   PathwayGridContainer,
   ExperimentsContainer, InteractionsContainer, GenomeGridContainer,
   AMRPanelGridContainer, SubsystemGridContainer, SurveillanceGridContainer, SerologyGridContainer, SFVTGridContainer,
-  SequenceGridContainer, StrainGridContainer, StrainGridContainer_Orthomyxoviridae, StrainGridContainer_Bunyavirales, EpitopeGridContainer, PathJoin, QueryToEnglish, Dialog
+  SequenceGridContainer, StrainGridContainer, StrainGridContainer_Orthomyxoviridae, StrainGridContainer_Bunyavirales, EpitopeGridContainer, PrivateGenomeMetadataGridContainer, PathJoin, QueryToEnglish, Dialog
 ) {
   return declare([TabViewerBase], {
     totalGenomes: 0,
@@ -237,6 +237,10 @@ define([
         title: 'AMR Phenotypes',
         id: this.viewer.id + '_amr'
       });
+      this.privateGenomeMetadata = new PrivateGenomeMetadataGridContainer({
+        title: 'Private Genome Metadata',
+        id: this.viewer.id + '_privateGenomeMetadata'
+      });
       this.features = new FeatureGridContainer({
         title: 'Features',
         id: this.viewer.id + '_features',
@@ -309,6 +313,7 @@ define([
       this.viewer.addChild(this.overview);
       this.viewer.addChild(this.genomes);
       this.viewer.addChild(this.amr);
+      this.viewer.addChild(this.privateGenomeMetadata);
       this.viewer.addChild(this.sequences);
       this.viewer.addChild(this.features);
       // this.viewer.addChild(this.proteins);
