@@ -1,15 +1,15 @@
 define([
   'dojo/_base/declare', 'dojo/_base/lang',
-  'dojo/dom-construct', 'dojo/on', 'dojo/topic',
+  'dojo/dom-construct', 'dojo/on', 'dojo/topic', 'dojo/request', 'dojo/_base/Deferred',
   'dijit/TooltipDialog', 'dijit/popup', 'dijit/Dialog',
   './GridContainer', './PrivateGenomeMetadataGrid', './PerspectiveToolTip', './SelectionToGroup',
-  '../util/PathJoin', './AdvancedSearchFields'
+  '../util/PathJoin', './AdvancedSearchFields', './PermissionEditor', '../DataAPI'
 ], function (
   declare, lang,
-  domConstruct, on, Topic,
+  domConstruct, on, Topic, request, Deferred,
   TooltipDialog, popup, Dialog,
   GridContainer, Grid, PerspectiveToolTipDialog, SelectionToGroup,
-  PathJoin, AdvancedSearchFields
+  PathJoin, AdvancedSearchFields, PermissionEditor, DataAPI
 ) {
 
   const dfc = '<div>Download Table As...</div><div class="wsActionTooltip" rel="text/tsv">Text</div><div class="wsActionTooltip" rel="text/csv">CSV</div><div class="wsActionTooltip" rel="application/vnd.openxmlformats">Excel</div>';
@@ -143,6 +143,71 @@ define([
           stg.startup();
           dlg.startup();
           dlg.show();
+        },
+        false
+      ],
+      [
+        'ShareMetadata',
+        'fa icon-user-plus fa-2x',
+        {
+          label: 'SHARE',
+          ignoreDataType: true,
+          multiple: true,
+          validTypes: ['*'],
+          requireAuth: true,
+          tooltip: 'Share metadata record(s) with other users',
+          validContainerTypes: ['private_genome_metadata_data']
+        },
+        function (selection, containerWidget) {
+          var self = this;
+
+          var initialPerms = DataAPI.solrPermsToObjs(selection);
+
+          // 'r'/'w' values from PermissionEditor map to 'read'/'write' for the API
+          var permMapping = { r: 'read', w: 'write', 'Can view': 'read', 'Can edit': 'write' };
+
+          var onConfirm = function (newPerms) {
+            var ids = selection.map(function (s) { return s.id; });
+
+            Topic.publish('/Notification', {
+              message: "<span class='default'>Updating permissions...</span>",
+              type: 'default',
+              duration: 50000
+            });
+
+            var payload = JSON.stringify(newPerms.map(function (p) {
+              return { user: p.user, permission: permMapping[p.permission] || p.permission };
+            }));
+
+            request.post(PathJoin(window.App.dataServiceURL, 'permissions/private_genome_metadata', ids.join(',')), {
+              handleAs: 'json',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': null,
+                'Authorization': window.App.authorizationToken || ''
+              },
+              data: payload
+            }).then(function () {
+              Topic.publish('/Notification', { message: 'Permissions updated.', type: 'message' });
+              self.grid.refresh();
+            }, function (err) {
+              Topic.publish('/Notification', {
+                message: 'Failed to update permissions. ' + (err.response && err.response.status || ''),
+                type: 'error'
+              });
+            });
+          };
+
+          var permEditor = new PermissionEditor({
+            selection: selection,
+            onConfirm: onConfirm,
+            user: window.App.user.id || '',
+            useSolrAPI: true,
+            permissions: initialPerms
+          });
+
+          permEditor.show();
         },
         false
       ]

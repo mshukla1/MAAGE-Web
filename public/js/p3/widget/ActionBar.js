@@ -81,8 +81,8 @@ define([
         var act = this._actions[an];
         var validTypes = act.options.validTypes || [];
 
-        // only allow genome sharing if all genomes are owned by user
-        if (sel[0] && an === 'Share') {
+        // only allow genome/metadata sharing if all records are owned by user
+        if (sel[0] && (an === 'Share' || an === 'ShareMetadata')) {
           var notOwnedList = sel.filter(function (obj) {
             return obj.owner !== window.App.user.id;
           });
