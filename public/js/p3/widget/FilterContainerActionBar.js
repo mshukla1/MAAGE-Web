@@ -1037,6 +1037,9 @@ define([
         return def.promise;
       }
 
+      // _updateFilteredCounts passes '?' + q; strip it so the URL template doesn't double it
+      query = (query.charAt(0) === '?') ? query.substr(1) : query;
+
       const facets = 'facet(' + (facetFields || this.facetFields).map((field) => {
         return ( typeof (field) === 'string' ) ? `(field,${field})` : `(field,${field.field})`;
       }).join(',') + ',(mincount,1),(limit,-1))';
